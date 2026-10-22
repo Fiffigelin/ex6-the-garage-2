@@ -22,7 +22,6 @@ internal class Program
     // Console.WriteLine($"JSON-innehåll:\n{File.ReadAllText(filePath)}");
 
     GarageSeeder.Seed(GarageData, filePath);
-
     Console.OutputEncoding = Encoding.UTF8;
 
     while (true)
@@ -34,7 +33,8 @@ internal class Program
          "Show Parking Facilities",
          "Show All Parked Vehicles",
          "Park Vehicle",
-         "Search Vehicles",
+         "Remove Vehicle",
+         "Search",
          "Exit"
         ];
 
@@ -55,9 +55,12 @@ internal class Program
             VehicleService.ParkVehicle(GarageData);
             break;
           case 3:
-            VehicleService.SearchVehicles(GarageData);
+            VehicleService.RemoveVehicle(GarageData);
             break;
           case 4:
+            VehicleService.SearchVehicles(GarageData);
+            break;
+          case 5:
             Environment.Exit(0);
             break;
         }

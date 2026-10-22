@@ -111,7 +111,7 @@ public static partial class VehicleService
     SearchVehicle filter = new(licensePlate, color, numberOfWheels, type);
     List<VehicleSearchResult> results = SearchVehicle(filter, data);
 
-    VehicleTableConsole.ViewSearchTable(results);
+    VehicleTableConsole.ViewVehicleWithGarageNameTable(results);
   }
 
   public static void ShowAllParkedVehicles(GarageData data)
@@ -135,8 +135,24 @@ public static partial class VehicleService
         default:
           break;
       }
-
     }
+  }
+
+  public static void RemoveVehicle(GarageData data)
+  {
+    Console.Clear();
+    TitleConsole.DisplayMainTitle();
+
+    List<VehicleSearchResult> results = [];
+    foreach (Garage garage in data.Garages)
+    {
+      foreach (Vehicle vehicle in garage.Vehicles)
+      {
+        results.Add(new VehicleSearchResult(garage, vehicle));
+      }
+    }
+
+    VehicleTableConsole.ViewVehicleWithGarageNameTable(results, true);
   }
 
   // söker i enskilt parkeringshus

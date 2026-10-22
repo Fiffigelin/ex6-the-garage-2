@@ -49,7 +49,7 @@ public static class VehicleTableConsole
       rows,
       () => [VehicleStat(facility.Vehicles)]);
   }
-  public static void ViewSearchTable(List<VehicleSearchResult> results)
+  public static void ViewVehicleWithGarageNameTable(List<VehicleSearchResult> results, bool showStat = false)
   {
     List<int> columnWidths = [1, -14, -10, -12, -10, 6];
     List<string> header = ["Search Results"];
@@ -79,8 +79,9 @@ public static class VehicleTableConsole
       vehicles.Add(result.Vehicle);
     }
 
-    GenericTableConsole.PrintTable(() => header, columnHeader, columnWidths, rows, () => [""]);
+    GenericTableConsole.PrintTable(() => header, columnHeader, columnWidths, rows, showStat ? () => [VehicleStat(vehicles)] : () => [""]);
   }
+
   public static void ViewAllVehicles(List<VehicleSearchResult> results)
   {
     List<int> columnWidths = [1, -14, -10, -12, -10, 6];
@@ -145,27 +146,34 @@ public static class VehicleTableConsole
 
   private static string VehicleStat(List<Vehicle> vehicles)
   {
-    int car = CountVehicleType(vehicles, VehicleType.Car);
-    int bus = CountVehicleType(vehicles, VehicleType.Bus);
-    int motorcycle = CountVehicleType(vehicles, VehicleType.Motorcycle);
-    int airplane = CountVehicleType(vehicles, VehicleType.Airplane);
-    int boat = CountVehicleType(vehicles, VehicleType.Boat);
-    return $"{VehicleConsole.PrintVehicleType(VehicleType.Car)} : {car} | {VehicleConsole.PrintVehicleType(VehicleType.Bus)} : {bus} | {VehicleConsole.PrintVehicleType(VehicleType.Motorcycle)} : {motorcycle} | {VehicleConsole.PrintVehicleType(VehicleType.Airplane)} : {airplane} | {VehicleConsole.PrintVehicleType(VehicleType.Boat)} : {boat}";
-  }
+    int car = 0;
+    int bus = 0;
+    int motorcycle = 0;
+    int airplane = 0;
+    int boat = 0;
 
-  private static int CountVehicleType(List<Vehicle> vehicles, VehicleType type)
-  {
-    int sum = 0;
-    for (int i = 0; i < vehicles.Count; i++)
+    foreach (Vehicle vehicle in vehicles)
     {
-      Vehicle vehicle = vehicles[i];
-
-      if (vehicle is not null && vehicle.Type == type)
+      switch (vehicle.Type)
       {
-        sum++;
+        case VehicleType.Car:
+          car++;
+          break;
+        case VehicleType.Bus:
+          bus++;
+          break;
+        case VehicleType.Motorcycle:
+          motorcycle++;
+          break;
+        case VehicleType.Airplane:
+          airplane++;
+          break;
+        case VehicleType.Boat:
+          boat++;
+          break;
       }
     }
 
-    return sum;
+    return $"{VehicleConsole.PrintVehicleType(VehicleType.Car)} : {car} | {VehicleConsole.PrintVehicleType(VehicleType.Bus)} : {bus} | {VehicleConsole.PrintVehicleType(VehicleType.Motorcycle)} : {motorcycle} | {VehicleConsole.PrintVehicleType(VehicleType.Airplane)} : {airplane} | {VehicleConsole.PrintVehicleType(VehicleType.Boat)} : {boat}";
   }
 }
