@@ -9,25 +9,19 @@ namespace ConsoleUtilities;
 
 public static class VehicleTableConsole
 {
-  public static void ViewVehiclesTable(Domain.Garages.Garage facility)
+  public static void ViewVehiclesTable(Garage facility)
   {
-    int[] columnWidths = [1, 12, 12, 10, 10];
-    string[] columnHeader = ["", "License", "Type", "Color", "Wheels"];
+    List<int> columnWidths = [1, 12, 12, 10, 10];
+    List<string> columnHeader = ["", "License", "Type", "Color", "Wheels"];
 
-    RowData<Vehicle>[] rows = new RowData<Vehicle>[facility.CountParkedVehicles()];
-    Vehicle[] vehicles = new Vehicle[facility.CountParkedVehicles()];
-    int index = 0;
-    for (int i = 0; i < facility.Vehicles.Length; i++)
+    List<RowData<Vehicle>> rows = [];
+    List<Vehicle> vehicles = [];
+    for (int i = 0; i < facility.Vehicles.Count; i++)
     {
       Vehicle? vehicle = facility.Vehicles[i];
       if (vehicle is not null)
       {
-        // jag veeeeet ingen lambda. Men jag satt i flera
-        // onödiga timmar med en generisk form av min TableConsole
-        // och jag ville inte snubbla vid mållinjen
-
-        // jag kör for och foreach på varenda lilla array
-        rows[index] = GenericTableConsole.FormatDataRow(
+        rows.Add(GenericTableConsole.FormatDataRow(
           vehicle,
           [
             "",
@@ -38,10 +32,9 @@ public static class VehicleTableConsole
           ],
           columnWidths,
           () => ViewVehicleInformation(vehicle, facility)
-        );
+        ));
 
-        vehicles[index] = vehicle;
-        index++;
+        vehicles.Add(vehicle);
       }
     }
 
@@ -49,27 +42,25 @@ public static class VehicleTableConsole
       () => [
         $"Facility: {facility.Name}",
         $"Amount of Parkinglots: {facility.ParkingLots}",
-        $"Free Parkinglots: {facility.ParkingLots - facility.CountParkedVehicles()}"
+        $"Free Parkinglots: {facility.ParkingLots - facility.Vehicles.Count}"
       ],
       columnHeader,
       columnWidths,
       rows,
-      () => [VehicleStat(GetParkedVehicles(facility))]);
+      () => [VehicleStat(facility.Vehicles)]);
   }
-  public static void ViewSearchTable(VehicleSearchResult[] results)
+  public static void ViewSearchTable(List<VehicleSearchResult> results)
   {
-    int[] columnWidths = [1, -14, -10, -12, -10, 6];
-    string[] header = ["Search Results"];
-    string[] columnHeader = ["", "Facility", "License", "Type", "Color", "Wheels"];
+    List<int> columnWidths = [1, -14, -10, -12, -10, 6];
+    List<string> header = ["Search Results"];
+    List<string> columnHeader = ["", "Facility", "License", "Type", "Color", "Wheels"];
 
-    RowData<VehicleSearchResult>[] rows = new RowData<VehicleSearchResult>[results.Length];
-    Vehicle[] vehicles = new Vehicle[results.Length];
+    List<RowData<VehicleSearchResult>> rows = [];
+    List<Vehicle> vehicles = [];
 
-    for (int i = 0; i < results.Length; i++)
+    foreach (VehicleSearchResult result in results)
     {
-      VehicleSearchResult result = results[i];
-      {
-        rows[i] = GenericTableConsole.FormatDataRow(
+      rows.Add(GenericTableConsole.FormatDataRow(
             result,
             [
                 "",
@@ -83,43 +74,39 @@ public static class VehicleTableConsole
             () => ViewVehicleInformation(
                 result.Vehicle,
                 result.Garage)
-        );
+      ));
 
-        vehicles[i] = result.Vehicle;
-      }
+      vehicles.Add(result.Vehicle);
     }
 
     GenericTableConsole.PrintTable(() => header, columnHeader, columnWidths, rows, () => [""]);
   }
-  public static void ViewAllVehicles(VehicleSearchResult[] results)
+  public static void ViewAllVehicles(List<VehicleSearchResult> results)
   {
-    int[] columnWidths = [1, -14, -10, -12, -10, 6];
-    string[] header = ["Show Vehicles"];
-    string[] columnHeader = ["", "Facility", "License", "Type", "Color", "Wheels"];
+    List<int> columnWidths = [1, -14, -10, -12, -10, 6];
+    List<string> header = ["Show Vehicles"];
+    List<string> columnHeader = ["", "Facility", "License", "Type", "Color", "Wheels"];
 
-    RowData<VehicleSearchResult>[] rows = new RowData<VehicleSearchResult>[results.Length];
-    Vehicle[] vehicles = new Vehicle[results.Length];
+    List<RowData<VehicleSearchResult>> rows = [];
+    List<Vehicle> vehicles = [];
 
-    for (int i = 0; i < results.Length; i++)
+    foreach (VehicleSearchResult result in results)
     {
-      VehicleSearchResult result = results[i];
-      {
-        rows[i] = GenericTableConsole.FormatDataRow(
-            result,
-            [
-                "",
+      rows.Add(GenericTableConsole.FormatDataRow(
+          result,
+          [
+              "",
                 result.Garage.Name,
                 result.Vehicle.LicensePlate?.Length > 0 ? result.Vehicle.LicensePlate : "",
                 result.Vehicle.Type.ToString(),
                 result.Vehicle.Color.ToString(),
                 result.Vehicle.NumberOfWheels.ToString()
-            ],
-            columnWidths,
-            () => true
-        );
+          ],
+          columnWidths,
+          () => true
+      ));
 
-        vehicles[i] = result.Vehicle;
-      }
+      vehicles.Add(result.Vehicle);
     }
 
     GenericTableConsole.PrintNoIntegrationTable(() => header, columnHeader, columnWidths, rows);
@@ -156,7 +143,7 @@ public static class VehicleTableConsole
     }
   }
 
-  private static string VehicleStat(Vehicle[] vehicles)
+  private static string VehicleStat(List<Vehicle> vehicles)
   {
     int car = CountVehicleType(vehicles, VehicleType.Car);
     int bus = CountVehicleType(vehicles, VehicleType.Bus);
@@ -166,10 +153,10 @@ public static class VehicleTableConsole
     return $"{VehicleConsole.PrintVehicleType(VehicleType.Car)} : {car} | {VehicleConsole.PrintVehicleType(VehicleType.Bus)} : {bus} | {VehicleConsole.PrintVehicleType(VehicleType.Motorcycle)} : {motorcycle} | {VehicleConsole.PrintVehicleType(VehicleType.Airplane)} : {airplane} | {VehicleConsole.PrintVehicleType(VehicleType.Boat)} : {boat}";
   }
 
-  private static int CountVehicleType(Vehicle[] vehicles, VehicleType type)
+  private static int CountVehicleType(List<Vehicle> vehicles, VehicleType type)
   {
     int sum = 0;
-    for (int i = 0; i < vehicles.Length; i++)
+    for (int i = 0; i < vehicles.Count; i++)
     {
       Vehicle vehicle = vehicles[i];
 
@@ -180,23 +167,5 @@ public static class VehicleTableConsole
     }
 
     return sum;
-  }
-
-  private static Vehicle[] GetParkedVehicles(Domain.Garages.Garage facility)
-  {
-    Vehicle?[] allVehicles = facility.Vehicles;
-    Vehicle[] parkedVehicles = new Vehicle[facility.CountParkedVehicles()];
-    int index = 0;
-
-    for (int i = 0; i < allVehicles.Length; i++)
-    {
-      if (allVehicles[i] is not null)
-      {
-        parkedVehicles[index] = allVehicles[i]!;
-        index++;
-      }
-    }
-
-    return parkedVehicles;
   }
 }

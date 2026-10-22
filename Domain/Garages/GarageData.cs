@@ -1,17 +1,18 @@
 using System;
+using System.Collections.Generic;
 using Domain.Vehicles;
 
 namespace Domain.Garages;
 
 public class GarageData
 {
-  private Garage[] _garages = [];
+  private List<Garage> _garages = [];
 
-  public Garage[] Garages
+  public List<Garage> Garages
   {
     get
     {
-      return (Garage[])_garages.Clone();
+      return _garages;
     }
   }
 
@@ -19,8 +20,7 @@ public class GarageData
   {
     ArgumentNullException.ThrowIfNull(facility);
 
-    Array.Resize(ref _garages, _garages.Length + 1);
-    _garages[^1] = facility;
+    _garages.Add(facility);
   }
 
   public bool IsNameUnique(string name)
@@ -40,16 +40,15 @@ public class GarageData
     return true;
   }
 
-  public Garage[] AvailableParking()
+  public List<Garage> AvailableParking()
   {
-    Garage[] available = [];
+    List<Garage> available = [];
 
-    foreach (Garage pf in _garages)
+    foreach (Garage garage in _garages)
     {
-      if (!pf.IsFull)
+      if (garage.Vehicles.Count < garage.ParkingLots)
       {
-        Array.Resize(ref available, available.Length + 1);
-        available[^1] = pf;
+        available.Add(garage);
       }
     }
 
@@ -62,7 +61,7 @@ public class GarageData
 
     foreach (Garage pf in _garages)
     {
-      Vehicle[] vehicles = pf.ParkedVehicles();
+      List<Vehicle> vehicles = pf.Vehicles;
 
       foreach (Vehicle? vh in vehicles)
       {

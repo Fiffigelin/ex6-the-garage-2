@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using ConsoleUtilities;
 using Data;
 using Domain.Garages;
@@ -21,6 +22,8 @@ internal class Program
     // Console.WriteLine($"JSON-innehåll:\n{File.ReadAllText(filePath)}");
 
     GarageSeeder.Seed(GarageData, filePath);
+
+    Console.OutputEncoding = Encoding.UTF8;
 
     while (true)
     {

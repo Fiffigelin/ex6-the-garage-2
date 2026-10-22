@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleUtilities;
 
@@ -19,11 +20,11 @@ public class RowData<T> where T : class
 public static class GenericTableConsole
 {
   public static void PrintTable<T>(
-    Func<string[]> header,
-    string[] columnHeader,
-    int[] columnWidths,
-    RowData<T>[] rows,
-    Func<string[]> footer) where T : class
+    Func<List<string>> header,
+    List<string> columnHeader,
+    List<int> columnWidths,
+    List<RowData<T>> rows,
+    Func<List<string>> footer) where T : class
   {
     int selectedIndex = 0;
     string line = new string('-', CalculateTableWidth(columnWidths));
@@ -45,13 +46,13 @@ public static class GenericTableConsole
       Console.WriteLine(columns);
       Console.WriteLine(line);
 
-      if (rows.Length == 0)
+      if (rows.Count == 0)
       {
         Console.WriteLine("   There's no vehicles parked.");
       }
       else
       {
-        for (int i = 0; i < rows.Length; i++)
+        for (int i = 0; i < rows.Count; i++)
         {
           if (i == selectedIndex)
           {
@@ -84,22 +85,22 @@ public static class GenericTableConsole
 
           if (selectedIndex < 0)
           {
-            selectedIndex = rows.Length - 1;
+            selectedIndex = rows.Count - 1;
           }
           break;
         case ConsoleKey.DownArrow:
           selectedIndex++;
 
-          if (selectedIndex >= rows.Length)
+          if (selectedIndex >= rows.Count)
           {
             selectedIndex = 0;
           }
           break;
         case ConsoleKey.Enter:
 
-          if (rows.Length == 0)
+          if (rows.Count == 0)
           {
-            break;
+            continue;
           }
 
           bool isRemoved = rows[selectedIndex].OnSelect.Invoke();
@@ -107,7 +108,7 @@ public static class GenericTableConsole
           if (isRemoved)
           {
             rows = ResizeRows(rows, rows[selectedIndex]);
-            selectedIndex = Math.Max(0, Math.Min(selectedIndex, rows.Length - 1));
+            selectedIndex = Math.Max(0, Math.Min(selectedIndex, rows.Count - 1));
           }
           continue;
         case ConsoleKey.Escape:
@@ -119,10 +120,10 @@ public static class GenericTableConsole
     }
   }
   public static void PrintNoIntegrationTable<T>(
-    Func<string[]> header,
-    string[] columnHeader,
-    int[] columnWidths,
-    RowData<T>[] rows) where T : class
+    Func<List<string>> header,
+    List<string> columnHeader,
+    List<int> columnWidths,
+    List<RowData<T>> rows) where T : class
   {
     string line = new string('-', CalculateTableWidth(columnWidths));
     string columns = FormatRow(columnHeader, columnWidths);
@@ -137,13 +138,13 @@ public static class GenericTableConsole
     Console.WriteLine(columns);
     Console.WriteLine(line);
 
-    if (rows.Length == 0)
+    if (rows.Count == 0)
     {
       Console.WriteLine("   There's no vehicles parked.");
     }
     else
     {
-      for (int i = 0; i < rows.Length; i++)
+      for (int i = 0; i < rows.Count; i++)
       {
         Console.WriteLine($"{rows[i].Row}");
       }
@@ -152,21 +153,21 @@ public static class GenericTableConsole
 
   }
 
-  public static RowData<T> FormatDataRow<T>(T data, string[] texts, int[] columnWidths, Func<bool> function) where T : class
+  public static RowData<T> FormatDataRow<T>(T data, List<string> texts, List<int> columnWidths, Func<bool> function) where T : class
   {
     return new RowData<T>(data, FormatRow(texts, columnWidths), function);
   }
 
-  private static string FormatRow(string[] header, int[] columnWidth)
+  private static string FormatRow(List<string> header, List<int> columnWidth)
   {
-    string[] formatted = new string[columnWidth.Length];
+    List<string> formatted = [];
 
-    for (int i = 0; i < columnWidth.Length; i++)
+    for (int i = 0; i < columnWidth.Count; i++)
     {
       int width = Math.Abs(columnWidth[i]);
       string text = Truncate(header[i], width);
 
-      formatted[i] = columnWidth[i] < 0 ? text.PadRight(width) : text.PadLeft(width);
+      formatted.Add(columnWidth[i] < 0 ? text.PadRight(width) : text.PadLeft(width));
     }
     return string.Join(" | ", formatted);
   }
@@ -181,7 +182,7 @@ public static class GenericTableConsole
     return width == 1 ? text[..1] : text[..(width - 1)] + "...";
   }
 
-  private static int CalculateTableWidth(int[] widths)
+  private static int CalculateTableWidth(List<int> widths)
   {
     int sum = 0;
     foreach (int i in widths)
@@ -189,27 +190,14 @@ public static class GenericTableConsole
       sum += Math.Abs(i);
     }
 
-    return sum + (widths.Length - 1) * 3;
+    return sum + (widths.Count - 1) * 3;
   }
 
-  private static RowData<T>[] ResizeRows<T>(RowData<T>[] rows, RowData<T> data) where T : class
+  private static List<RowData<T>> ResizeRows<T>(List<RowData<T>> rows, RowData<T> data) where T : class
   {
-    RowData<T>[] newRows = new RowData<T>[rows.Length - 1];
-    int index = 0;
+    List<RowData<T>> newRows = (rows);
 
-    for (int i = 0; i < rows.Length; i++)
-    {
-      // så bra saker man hittar och lär sig mer om
-      // https://learn.microsoft.com/en-us/dotnet/api/system.array.indexof?view=net-10.0
-      if (i == Array.IndexOf(rows, data))
-      {
-        continue;
-      }
-
-      newRows[index] = rows[i];
-      index++;
-    }
-
+    newRows.Remove(data);
     return newRows;
   }
 }

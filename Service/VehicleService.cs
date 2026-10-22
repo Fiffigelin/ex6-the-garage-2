@@ -21,12 +21,12 @@ public static partial class VehicleService
       TitleConsole.DisplayMainTitle();
       Console.WriteLine();
 
-      Garage[] garages = data.AvailableParking();
-
+      List<Garage> garages = data.AvailableParking();
       List<string> options = [];
-      for (int i = 0; i < garages.Length; i++)
+
+      foreach (Garage garage in garages)
       {
-        options.Add(garages[i].Name);
+        options.Add(garage.Name);
       }
       options.Add("Back");
 
@@ -43,7 +43,7 @@ public static partial class VehicleService
         continue;
       }
 
-      Domain.Garages.Garage parking = garages[input];
+      Garage parking = garages[input];
       Vehicle? vehicle;
 
       try
@@ -109,7 +109,7 @@ public static partial class VehicleService
     VehicleType? type = VehicleConsole.ChooseVehicleTypeFilter("Any", ["\nSearch vehicles", "Type of vehicle\n"]);
 
     SearchVehicle filter = new(licensePlate, color, numberOfWheels, type);
-    VehicleSearchResult[] results = SearchVehicle(filter, data);
+    List<VehicleSearchResult> results = SearchVehicle(filter, data);
 
     VehicleTableConsole.ViewSearchTable(results);
   }
@@ -123,7 +123,7 @@ public static partial class VehicleService
       VehicleType? type = VehicleConsole.ChooseVehicleTypeFilter(" All", ["\nShow Parked Cars By Type"]);
 
       SearchVehicle filter = new(null, null, null, type);
-      VehicleSearchResult[] results = SearchVehicle(filter, data);
+      List<VehicleSearchResult> results = SearchVehicle(filter, data);
 
       VehicleTableConsole.ViewAllVehicles(results);
       ConsoleKey key = Console.ReadKey(true).Key;
@@ -140,50 +140,42 @@ public static partial class VehicleService
   }
 
   // söker i enskilt parkeringshus
-  private static Vehicle[] SearchVehicle(SearchVehicle search, Domain.Garages.Garage garage)
+  private static List<Vehicle> SearchVehicle(SearchVehicle search, Garage garage)
   {
     ArgumentNullException.ThrowIfNull(search);
     ArgumentNullException.ThrowIfNull(garage);
 
-    Vehicle?[] vehicles = garage.Vehicles;
-    Vehicle[] results = new Vehicle[vehicles.Length];
-    int count = 0;
+    List<Vehicle>? vehicles = garage.Vehicles;
+    List<Vehicle> results = [];
 
-    for (int i = 0; i < vehicles.Length; i++)
+    foreach (Vehicle vehicle in vehicles)
     {
-      Vehicle? vehicle = vehicles[i];
-
       if (vehicle is not null && search.Matches(vehicle))
       {
-        results[count] = vehicle;
-        count++;
+        results.Add(vehicle);
       }
     }
 
-    Vehicle[] matches = new Vehicle[count];
-    Array.Copy(results, matches, count);
-
-    return matches;
+    return results;
   }
 
   // Söker i ALLA parkeringshus och berättar även vilket hus fordonet står i.
-  private static VehicleSearchResult[] SearchVehicle(
+  private static List<VehicleSearchResult> SearchVehicle(
       SearchVehicle filter,
       GarageData data)
   {
     ArgumentNullException.ThrowIfNull(filter);
     ArgumentNullException.ThrowIfNull(data);
 
-    VehicleSearchResult[] hits = [];
+    List<VehicleSearchResult> hits = [];
 
-    foreach (Domain.Garages.Garage facility in data.Garages)
+    foreach (Garage garage in data.Garages)
     {
-      Vehicle[] vehicles = SearchVehicle(filter, facility);
+      List<Vehicle> vehicles = SearchVehicle(filter, garage);
 
       foreach (Vehicle vehicle in vehicles)
       {
-        Array.Resize(ref hits, hits.Length + 1);
-        hits[^1] = new VehicleSearchResult(facility, vehicle);
+        hits.Add(new VehicleSearchResult(garage, vehicle));
       }
     }
 

@@ -20,7 +20,7 @@ public static class ParkingFacilityService
   {
     while (true)
     {
-      Garage[] facilities = data.Garages;
+      List<Garage> facilities = data.Garages;
       List<string> options = ["Add New Parking Facility"];
 
       foreach (Garage facility in facilities)
@@ -41,7 +41,7 @@ public static class ParkingFacilityService
       }
       else
       {
-        VehicleTableConsole.ViewVehiclesTable(facilities[input - 1]);
+        VehicleTableConsole.ViewVehiclesTable(facilities[input]);
       }
     }
   }
