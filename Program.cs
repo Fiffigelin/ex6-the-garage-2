@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using ConsoleUtilities;
 using Data;
@@ -25,14 +26,14 @@ internal class Program
     {
       try
       {
-        string[] mainOptions =
-        {
+        List<string> mainOptions =
+        [
          "Show Parking Facilities",
          "Show All Parked Vehicles",
          "Park Vehicle",
          "Search Vehicles",
          "Exit"
-        };
+        ];
 
         int choice = MenuConsole.MenuHandler(["Welcome to Elins Parking Solution", "Parky Squeezy, Nice and Easy!\n"], mainOptions);
 

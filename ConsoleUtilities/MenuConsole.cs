@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleUtilities;
 
 public static class MenuConsole
 {
 
-  public static int MenuHandler(string[] previousTexts, string[] options)
+  public static int MenuHandler(List<string> previousTexts, List<string> options)
   {
-    if (options.Length == 0)
+    if (options.Count == 0)
     {
       return -1;
     }
@@ -23,7 +24,7 @@ public static class MenuConsole
         Console.WriteLine(text);
       }
 
-      for (int i = 0; i < options.Length; i++)
+      for (int i = 0; i < options.Count; i++)
       {
         if (i == selectedIndex)
         {
@@ -47,13 +48,13 @@ public static class MenuConsole
 
           if (selectedIndex < 0)
           {
-            selectedIndex = options.Length - 1;
+            selectedIndex = options.Count - 1;
           }
           break;
         case ConsoleKey.DownArrow:
           selectedIndex++;
 
-          if (selectedIndex >= options.Length)
+          if (selectedIndex >= options.Count)
           {
             selectedIndex = 0;
           }

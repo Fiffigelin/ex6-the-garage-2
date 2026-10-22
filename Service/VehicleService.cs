@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ConsoleUtilities;
 using Domain.Garages;
 using Domain.General;
@@ -11,7 +12,7 @@ public static partial class VehicleService
 {
 
   // En träff i sökningen: fordonet och parkeringshuset det står i.
-  public sealed record VehicleSearchResult(Domain.Garages.Garage Garage, Vehicle Vehicle);
+  public sealed record VehicleSearchResult(Garage Garage, Vehicle Vehicle);
   public static void ParkVehicle(GarageData data)
   {
     while (true)
@@ -20,18 +21,18 @@ public static partial class VehicleService
       TitleConsole.DisplayMainTitle();
       Console.WriteLine();
 
-      Domain.Garages.Garage[] garages = data.AvailableParking();
+      Garage[] garages = data.AvailableParking();
 
-      string[] options = new string[garages.Length + 1];
+      List<string> options = [];
       for (int i = 0; i < garages.Length; i++)
       {
-        options[i] = garages[i].Name;
+        options.Add(garages[i].Name);
       }
-      options[^1] = "Back";
+      options.Add("Back");
 
       int input = MenuConsole.MenuHandler(["\nChoose a Parking Facility"], options);
 
-      if (input == -1 || input == options.Length - 1)
+      if (input == -1 || input == options.Count - 1)
       {
         return;
       }

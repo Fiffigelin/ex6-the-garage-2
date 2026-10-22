@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ConsoleUtilities;
 using Domain.Garages;
 
@@ -19,16 +20,14 @@ public static class ParkingFacilityService
   {
     while (true)
     {
-      Domain.Garages.Garage[] facilities = data.Garages;
-      string[] options = ["Add New Parking Facility"];
+      Garage[] facilities = data.Garages;
+      List<string> options = ["Add New Parking Facility"];
 
-      foreach (Domain.Garages.Garage facility in facilities)
+      foreach (Garage facility in facilities)
       {
-        Array.Resize(ref options, options.Length + 1);
-        options[^1] = facility.Name;
+        options.Add(facility.Name);
       }
-      Array.Resize(ref options, options.Length + 1);
-      options[^1] = "Go Back To Main Page";
+      options.Add("Go Back To Main Page");
 
       int input = MenuConsole.MenuHandler(["\nHandle parking facilities\n"], options);
 
@@ -36,7 +35,7 @@ public static class ParkingFacilityService
       {
         AddNewParkingFacility(data);
       }
-      else if (input == options.Length - 1 || input == -1)
+      else if (input == options.Count - 1 || input == -1)
       {
         return;
       }

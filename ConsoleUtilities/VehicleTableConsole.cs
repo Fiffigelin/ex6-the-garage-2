@@ -1,7 +1,9 @@
 using System;
 using Domain.General;
 using Domain.Vehicles;
+using Domain.Garages;
 using static Service.VehicleService;
+using System.Collections.Generic;
 
 namespace ConsoleUtilities;
 
@@ -123,9 +125,9 @@ public static class VehicleTableConsole
     GenericTableConsole.PrintNoIntegrationTable(() => header, columnHeader, columnWidths, rows);
   }
 
-  private static bool ViewVehicleInformation(Vehicle vehicle, Domain.Garages.Garage facility)
+  private static bool ViewVehicleInformation(Vehicle vehicle, Garage facility)
   {
-    string[] options = ["Exit Parking", "Back"];
+    List<string> options = ["Exit Parking", "Back"];
 
     int input = MenuConsole.MenuHandler(["", vehicle.GetInfo(), ""], options);
 

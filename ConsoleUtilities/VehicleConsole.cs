@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Domain.General;
 
 namespace ConsoleUtilities;
@@ -24,21 +25,21 @@ public static class VehicleConsole
     }
   }
 
-  public static VehicleType? ChooseVehicleTypeFilter(string option, string[] headers)
+  public static VehicleType? ChooseVehicleTypeFilter(string option, List<string> headers)
   {
-    VehicleType[] types = Enum.GetValues<VehicleType>();
+    List<VehicleType> types = [.. Enum.GetValues<VehicleType>()];
 
-    string[] options = new string[types.Length + 1];
+    List<string> options = [];
     options[0] = option;
 
-    for (int i = 0; i < types.Length; i++)
+    for (int i = 0; i < types.Count; i++)
     {
       options[i + 1] = $"{PrintVehicleType(types[i])} {types[i]}";
     }
 
     int input = MenuConsole.MenuHandler(headers, options);
 
-    if (input <= 0 || input > types.Length)
+    if (input <= 0 || input > types.Count)
     {
       return null;
     }
@@ -48,7 +49,7 @@ public static class VehicleConsole
 
   public static VehicleType? ChooseVehicleType()
   {
-    string[] options = [
+    List<string> options = [
       $"{PrintVehicleType(VehicleType.Car)} Car",
       $"{PrintVehicleType(VehicleType.Motorcycle)} Motorcycle",
       $"{PrintVehicleType(VehicleType.Bus)} Bus",
@@ -59,7 +60,7 @@ public static class VehicleConsole
 
     int input = MenuConsole.MenuHandler(["", "Park a Vehicle", "Type of vehicle", ""], options);
 
-    if (input == -1 || input == options.Length - 1)
+    if (input == -1 || input == options.Count - 1)
     {
       return null;
     }
