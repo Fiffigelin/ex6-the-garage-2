@@ -3,6 +3,6 @@
 
 ## Ändrat från version 1
 * [x] Man kan nu direkt från main ta bort ett fordon. Då visas alla fordon, var de är parkerade och så väljer man fordon som man vill köra ut,
-* [x] Denna var svår att lösa, MSDN hade gömt denna bra. Men efter lite googlande hittade jag denna: ``Console.OutputEncoding = Encoding.UTF8;``
+* [x] Få emojis att visas. Denna var svår att lösa, MSDN hade gömt infon bra. Men efter lite googlande hittade jag detta: ``Console.OutputEncoding = Encoding.UTF8;``
 
 **OM** det fortfarande är problem med emojisarna, säg till direkt så ändrar jag koden. Men emojisarna är så söta så jag hade velat har kvar dem! :)
