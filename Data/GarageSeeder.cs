@@ -8,6 +8,7 @@ namespace Data;
 
 public static class GarageSeeder
 {
+  // refaktor: ändra från svenska till engelska
   public static void Seed(GarageData garageData, string filePath)
   {
     string json = File.ReadAllText(filePath);
@@ -20,11 +21,11 @@ public static class GarageSeeder
     GarageSeedData seedData =
         JsonSerializer.Deserialize<GarageSeedData>(json, options)
         ?? throw new InvalidDataException(
-            "Kunde inte läsa garagefilen.");
+            "Could not read the file.");
 
     foreach (GarageSeedItem item in seedData.Garages)
     {
-      Domain.Garages.Garage garage = new(item.Name, item.ParkingLots);
+      Garage garage = new(item.Name, item.ParkingLots);
 
       foreach (VehicleSeedItem vehicleItem in item.Vehicles)
       {
@@ -33,7 +34,7 @@ public static class GarageSeeder
         if (!garage.AddVehicle(vehicle))
         {
           throw new InvalidDataException(
-              $"Kunde inte parkera fordon i {item.Name}.");
+              $"Could not park vehicle in Garage {item.Name}.");
         }
       }
 

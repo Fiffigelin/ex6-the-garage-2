@@ -174,6 +174,7 @@ public static class VehicleTableConsole
       }
     }
 
-    return $"{VehicleConsole.PrintVehicleType(VehicleType.Car)} : {car} | {VehicleConsole.PrintVehicleType(VehicleType.Bus)} : {bus} | {VehicleConsole.PrintVehicleType(VehicleType.Motorcycle)} : {motorcycle} | {VehicleConsole.PrintVehicleType(VehicleType.Airplane)} : {airplane} | {VehicleConsole.PrintVehicleType(VehicleType.Boat)} : {boat}";
+    //refaktorering: lägger till skriven text också då emojisarna inte verkar fungera överallt
+    return $"Car {VehicleConsole.PrintVehicleType(VehicleType.Car)} : {car} | Bus {VehicleConsole.PrintVehicleType(VehicleType.Bus)} : {bus} | Motorcycle {VehicleConsole.PrintVehicleType(VehicleType.Motorcycle)} : {motorcycle} | Airplane {VehicleConsole.PrintVehicleType(VehicleType.Airplane)} : {airplane} | Boat {VehicleConsole.PrintVehicleType(VehicleType.Boat)} : {boat}";
   }
 }

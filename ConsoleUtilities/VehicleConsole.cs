@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Domain.General;
 
 namespace ConsoleUtilities;
@@ -29,8 +30,12 @@ public static class VehicleConsole
   {
     List<VehicleType> types = [.. Enum.GetValues<VehicleType>()];
 
-    List<string> options = [];
-    options[0] = option;
+    // buggfix: jag hade helt glömt bort att skriva in menyn
+    List<string> options = [option, $"{PrintVehicleType(VehicleType.Car)} Car",
+      $"{PrintVehicleType(VehicleType.Motorcycle)} Motorcycle",
+      $"{PrintVehicleType(VehicleType.Bus)} Bus",
+      $"{PrintVehicleType(VehicleType.Airplane)} Airplane",
+      $"{PrintVehicleType(VehicleType.Boat)} Boat",];
 
     for (int i = 0; i < types.Count; i++)
     {
