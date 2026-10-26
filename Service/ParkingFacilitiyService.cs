@@ -41,7 +41,8 @@ public static class ParkingFacilityService
       }
       else
       {
-        VehicleTableConsole.ViewVehiclesTable(facilities[input]);
+        // buggfix: här hade jag råkat ta bort -1 vilket gav felaktigt resultat i att visa rätt garage
+        VehicleTableConsole.ViewVehiclesTable(facilities[input - 1]);
       }
     }
   }
@@ -56,7 +57,7 @@ public static class ParkingFacilityService
 
     try
     {
-      data.AddFacility(new Domain.Garages.Garage(facilityName, parkingLots));
+      data.AddFacility(new Garage(facilityName, parkingLots));
       Console.WriteLine($"\nParking facility '{facilityName}' has been added with {parkingLots} lots");
     }
     catch (ArgumentException ex)
